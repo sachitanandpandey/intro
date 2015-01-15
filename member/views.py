@@ -1,8 +1,9 @@
+
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response,Http404
 from django.template import RequestContext
 from member.forms import RegistrationForm, LoginForm
 from member.models import Member
@@ -21,7 +22,7 @@ def MemberRegistration(request):
                 user.save()
                 member = Member(user=user,name = form.cleaned_data['name'],email=form.cleaned_data['email'],)
                 member.save()
-                return HttpResponseRedirect('/profile/')
+                return HttpResponseRedirect('/profile/(?P<pk>\w+)/')
 # http://mayukhsaha.wordpress.com/2013/05/09/simple-login-and-user-registration-application-using-django/
 # http://runnable.com/UqLQLKmXsSAmAAd5/user-registration-form-with-captcha-using-django-simple-captcha-for-python
         else:
@@ -42,7 +43,12 @@ def Profile(request):
     return render_to_response('profile.html',context,context_instance=RequestContext(request))
 
 
-
+def single_profile(request,username):
+    try:
+        user = User.objects.get_by_natural_key(username=username)
+    except Exception:
+        raise HTTP404
+    return render_to_response('single.html',context_instance=RequestContext(request))
 
 def LoginRequest(request):
      if request.user.is_authenticated():
