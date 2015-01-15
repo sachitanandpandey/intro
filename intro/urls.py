@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.views.generic import TemplateView
+from django.conf.urls.defaults import *
 
 urlpatterns = patterns('',
     # Examples:
@@ -14,5 +15,7 @@ urlpatterns = patterns('',
     (r'^login/$','member.views.LoginRequest'),
     (r'^logout/$','member.views.LogoutRequest'),
     (r'^profile/$','member.views.Profile'),
+    (r'^profile/(?P<username>\w+)/$','member.views.single_profile'),
+
 
 )
